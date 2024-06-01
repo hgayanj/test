@@ -16,6 +16,9 @@
         
         <label for="invoice_date">Invoice Date:</label>
         <input type="date" id="invoice_date" name="invoice_date" required><br><br>
+
+        <label for="Distributer">Invoice Date:</label>
+        <input type="text" id="Distributer" name="Distributer" required><br><br>
         
         <h3>Item Details</h3>
         <table id="itemTable">
@@ -28,6 +31,7 @@
                 <td><input type="text" name="item_description[]" required></td>
                 <td><input type="number" name="item_quantity[]" required></td>
                 <td><input type="number" name="item_price[]" required></td>
+                <td><input type="number" name="discount_percentage[]" required></td>
             </tr>
         </table>
         <button type="button" onclick="addItemRow()">Add Item</button><br><br>
@@ -43,6 +47,7 @@
                 <td><input type="text" name="item_description[]" required></td>
                 <td><input type="number" name="item_quantity[]" required></td>
                 <td><input type="number" name="item_price[]" required></td>
+                <td><input type="number" name="discount_percentage[]" required></td>
             `;
         }
     </script>

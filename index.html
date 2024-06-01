@@ -7,7 +7,7 @@
 </head>
 <body>
     <h2>Invoice Entry Form</h2>
-    <form id="invoiceForm">
+    <form id="invoiceForm" action="https://formspree.io/f/mqkrvpzv" method="POST">
         <label for="invoice_id">Invoice ID:</label>
         <input type="text" id="invoice_id" name="invoice_id" required><br><br>
         
@@ -32,7 +32,7 @@
         </table>
         <button type="button" onclick="addItemRow()">Add Item</button><br><br>
         
-        <button type="button" onclick="submitForm()">Submit</button>
+        <button type="submit">Submit</button>
     </form>
 
     <script>
@@ -44,47 +44,6 @@
                 <td><input type="number" name="item_quantity" required></td>
                 <td><input type="number" name="item_price" required></td>
             `;
-        }
-
-        function submitForm() {
-            const formData = new FormData(document.getElementById('invoiceForm'));
-            const items = [];
-
-            // Collect item data
-            const itemRows = document.querySelectorAll('#itemTable tr:not(:first-child)');
-            itemRows.forEach(row => {
-                const itemDescription = row.querySelector('input[name="item_description"]').value;
-                const itemQuantity = row.querySelector('input[name="item_quantity"]').value;
-                const itemPrice = row.querySelector('input[name="item_price"]').value;
-                items.push({ itemDescription, itemQuantity, itemPrice });
-            });
-
-            // Create an object to hold all the form data
-            const data = {
-                invoice_id: formData.get('invoice_id'),
-                customer_name: formData.get('customer_name'),
-                invoice_date: formData.get('invoice_date'),
-                items: items
-            };
-
-            // Send the data as JSON
-            fetch('https://script.google.com/macros/s/AKfycbxEYxeiy3tPYFhD6SPd3S04nRZl3RBoVHlflAdW1sHaEe7Z9kzd0m1v-D6yFLhuHMY2/exec', {
-                method: 'POST',
-                body: JSON.stringify(data),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => {
-                if (response.ok) {
-                    alert('Invoice submitted successfully!');
-                    document.getElementById('invoiceForm').reset(); // Reset the form after successful submission
-                } else {
-                    alert('Failed to submit invoice.');
-                }
-            }).catch(error => {
-                console.error('Error:', error);
-                alert('Error submitting invoice.');
-            });
         }
     </script>
 </body>

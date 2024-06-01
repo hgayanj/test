@@ -7,7 +7,7 @@
 </head>
 <body>
     <h2>Invoice Entry Form</h2>
-    <form id="invoiceForm" action="https://script.google.com/macros/s/AKfycby3f1XNFYi8aATBSPp43iTuqRibsJ7sTmfPeHhDhwQx2-LsOO1whh1aM_v9XQnw0iil1Q/exec" method="POST">
+    <form id="invoiceForm">
         <label for="invoice_id">Invoice ID:</label>
         <input type="text" id="invoice_id" name="invoice_id" required><br><br>
         
@@ -32,7 +32,7 @@
         </table>
         <button type="button" onclick="addItemRow()">Add Item</button><br><br>
         
-        <button type="submit">Submit</button>
+        <button type="button" onclick="submitForm()">Submit</button>
     </form>
 
     <script>
@@ -44,6 +44,52 @@
                 <td><input type="number" name="item_quantity" required></td>
                 <td><input type="number" name="item_price" required></td>
             `;
+        }
+
+        function submitForm() {
+            const form = document.getElementById('invoiceForm');
+            const formData = new FormData(form);
+            const data = {};
+
+            formData.forEach((value, key) => {
+                if (!data[key]) {
+                    data[key] = value;
+                } else {
+                    if (!Array.isArray(data[key])) {
+                        data[key] = [data[key]];
+                    }
+                    data[key].push(value);
+                }
+            });
+
+            const items = [];
+            const itemRows = document.querySelectorAll('#itemTable tr:not(:first-child)');
+            itemRows.forEach(row => {
+                items.push({
+                    item_description: row.querySelector('input[name="item_description"]').value,
+                    item_quantity: row.querySelector('input[name="item_quantity"]').value,
+                    item_price: row.querySelector('input[name="item_price"]').value,
+                });
+            });
+            data.items = items;
+
+            fetch('https://script.google.com/macros/s/AKfycbyeRzJ9QTgn-sbfX2BFrRn_gueL9eTTeYb3ZlNoHz2Sl6pPxUIFROs7xu-G85g3oYaubQ/exec', {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    alert('Invoice submitted successfully!');
+                    form.reset();
+                } else {
+                    alert('Failed to submit invoice.');
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+                alert('Error submitting invoice.');
+            });
         }
     </script>
 </body>

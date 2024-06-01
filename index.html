@@ -7,7 +7,7 @@
 </head>
 <body>
     <h2>Invoice Entry Form</h2>
-    <form id="invoiceForm">
+    <form id="invoiceForm" action="https://formspree.io/f/mqkrvpzv" method="POST">
         <label for="invoice_id">Invoice ID:</label>
         <input type="text" id="invoice_id" name="invoice_id" required><br><br>
         
@@ -32,7 +32,7 @@
         </table>
         <button type="button" onclick="addItemRow()">Add Item</button><br><br>
         
-        <button type="button" onclick="submitForm()">Submit</button>
+        <button type="submit">Submit</button>
     </form>
 
     <script>
@@ -44,41 +44,6 @@
                 <td><input type="number" name="item_quantity" required></td>
                 <td><input type="number" name="item_price" required></td>
             `;
-        }
-
-        function submitForm() {
-            const formData = new FormData(document.getElementById('invoiceForm'));
-            const items = [];
-
-            // Collect item data
-            const itemRows = document.querySelectorAll('#itemTable tr:not(:first-child)');
-            itemRows.forEach(row => {
-                const itemDescription = row.querySelector('input[name="item_description"]').value;
-                const itemQuantity = row.querySelector('input[name="item_quantity"]').value;
-                const itemPrice = row.querySelector('input[name="item_price"]').value;
-                items.push({ itemDescription, itemQuantity, itemPrice });
-            });
-
-            // Include items in the form data
-            formData.append('items', JSON.stringify(items));
-
-            fetch('/submit-invoice', {
-                method: 'POST',
-                body: JSON.stringify(Object.fromEntries(formData)),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => {
-                if (response.ok) {
-                    alert('Invoice submitted successfully!');
-                    document.getElementById('invoiceForm').reset(); // Reset the form after successful submission
-                } else {
-                    alert('Failed to submit invoice.');
-                }
-            }).catch(error => {
-                console.error('Error:', error);
-                alert('Error submitting invoice.');
-            });
         }
     </script>
 </body>

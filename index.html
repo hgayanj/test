@@ -84,11 +84,11 @@
                     alert('Invoice submitted successfully!');
                     form.reset();
                 } else {
-                    alert('Failed to submit invoice.');
+                    return response.text().then(text => { throw new Error(text); });
                 }
             }).catch(error => {
                 console.error('Error:', error);
-                alert('Error submitting invoice.');
+                alert('Error submitting invoice: ' + error.message);
             });
         }
     </script>

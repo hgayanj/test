@@ -18,7 +18,11 @@
         <input type="date" id="invoice_date" name="invoice_date" required><br><br>
 
         <label for="Distributer">Distributor:</label>
-        <input type="text" id="distributor" name="distributor" required><br><br>
+        <input type="text" id="distributor" name="distributor" list="distributorList" required><br><br>
+        <datalist id="distributorList">
+            <option value="Sunrich Confectionery Pvt.Ltd">
+            <option value="Softlogic Retail-Pvt.Ltd">
+        </datalist>
         
         <h3>Item Details</h3>
         <table id="itemTable">

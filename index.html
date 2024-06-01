@@ -7,7 +7,7 @@
 </head>
 <body>
     <h2>Invoice Entry Form</h2>
-    <form id="invoiceForm" action="https://script.google.com/macros/s/AKfycbzSJHtIc3nKGrY-P_BIF-N_X40Arh8e0PEoz-kh7MgIOlv2A6r0Fgtu2FpKZ4lZpSX2/exec" method="POST">
+    <form id="invoiceForm" action="https://script.google.com/macros/s/AKfycbyfHAVv3jMC5U-QXzaE5PN6GhqpELyeVpUEmM5zX7XTsEfgfhm60TrYZXf68IpF8QLO/exec" method="POST">
         <label for="invoice_id">Invoice ID:</label>
         <input type="text" id="invoice_id" name="invoice_id" required><br><br>
         
@@ -18,18 +18,17 @@
         <input type="date" id="invoice_date" name="invoice_date" required><br><br>
         
         <h3>Item Details</h3>
-        <table id="itemTable">
-            <tr>
-                <th>Item Description</th>
-                <th>Quantity</th>
-                <th>Price</th>
-            </tr>
-            <tr>
-                <td><input type="text" name="item_description[]" required></td>
-                <td><input type="number" name="item_quantity[]" required></td>
-                <td><input type="number" name="item_price[]" required></td>
-            </tr>
-        </table>
+        <div id="itemRows">
+            <div class="itemRow">
+                <label for="item_description">Item Description:</label>
+                <input type="text" name="item_description[]" required>
+                <label for="item_quantity">Quantity:</label>
+                <input type="number" name="item_quantity[]" required>
+                <label for="item_price">Price:</label>
+                <input type="number" name="item_price[]" required>
+            </div>
+        </div>
+        
         <button type="button" onclick="addItemRow()">Add Item</button><br><br>
         
         <button type="submit">Submit</button>
@@ -37,13 +36,18 @@
 
     <script>
         function addItemRow() {
-            const table = document.getElementById('itemTable');
-            const newRow = table.insertRow();
+            const itemRows = document.getElementById('itemRows');
+            const newRow = document.createElement('div');
+            newRow.classList.add('itemRow');
             newRow.innerHTML = `
-                <td><input type="text" name="item_description[]" required></td>
-                <td><input type="number" name="item_quantity[]" required></td>
-                <td><input type="number" name="item_price[]" required></td>
+                <label for="item_description">Item Description:</label>
+                <input type="text" name="item_description[]" required>
+                <label for="item_quantity">Quantity:</label>
+                <input type="number" name="item_quantity[]" required>
+                <label for="item_price">Price:</label>
+                <input type="number" name="item_price[]" required>
             `;
+            itemRows.appendChild(newRow);
         }
     </script>
 </body>

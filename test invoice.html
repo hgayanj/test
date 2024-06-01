@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Entry Form</title>
+</head>
+<body>
+    <h2>Invoice Entry Form</h2>
+    <form id="invoiceForm">
+        <label for="invoice_id">Invoice ID:</label>
+        <input type="text" id="invoice_id" name="invoice_id" required><br><br>
+        
+        <label for="customer_name">Customer Name:</label>
+        <input type="text" id="customer_name" name="customer_name" required><br><br>
+        
+        <label for="invoice_date">Invoice Date:</label>
+        <input type="date" id="invoice_date" name="invoice_date" required><br><br>
+        
+        <h3>Item Details</h3>
+        <table id="itemTable">
+            <tr>
+                <th>Item Description</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+            <tr>
+                <td><input type="text" name="item_description" required></td>
+                <td><input type="number" name="item_quantity" required></td>
+                <td><input type="number" name="item_price" required></td>
+            </tr>
+        </table>
+        <button type="button" onclick="addItemRow()">Add Item</button><br><br>
+        
+        <button type="button" onclick="submitForm()">Submit</button>
+    </form>
+
+    <script>
+        function addItemRow() {
+            const table = document.getElementById('itemTable');
+            const newRow = table.insertRow();
+            newRow.innerHTML = `
+                <td><input type="text" name="item_description" required></td>
+                <td><input type="number" name="item_quantity" required></td>
+                <td><input type="number" name="item_price" required></td>
+            `;
+        }
+
+        function submitForm() {
+            const formData = new FormData(document.getElementById('invoiceForm'));
+            const items = [];
+
+            // Collect item data
+            const itemRows = document.querySelectorAll('#itemTable tr:not(:first-child)');
+            itemRows.forEach(row => {
+                const itemDescription = row.querySelector('input[name="item_description"]').value;
+                const itemQuantity = row.querySelector('input[name="item_quantity"]').value;
+                const itemPrice = row.querySelector('input[name="item_price"]').value;
+                items.push({ itemDescription, itemQuantity, itemPrice });
+            });
+
+            // Include items in the form data
+            formData.append('items', JSON.stringify(items));
+
+            fetch('/submit-invoice', {
+                method: 'POST',
+                body: JSON.stringify(Object.fromEntries(formData)),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    alert('Invoice submitted successfully!');
+                    document.getElementById('invoiceForm').reset(); // Reset the form after successful submission
+                } else {
+                    alert('Failed to submit invoice.');
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+                alert('Error submitting invoice.');
+            });
+        }
+    </script>
+</body>
+</html>

@@ -25,9 +25,9 @@
                 <th>Price</th>
             </tr>
             <tr>
-                <td><input type="text" name="item_description" required></td>
-                <td><input type="number" name="item_quantity" required></td>
-                <td><input type="number" name="item_price" required></td>
+                <td><input type="text" name="item_description[]" required></td>
+                <td><input type="number" name="item_quantity[]" required></td>
+                <td><input type="number" name="item_price[]" required></td>
             </tr>
         </table>
         <button type="button" onclick="addItemRow()">Add Item</button><br><br>
@@ -40,9 +40,9 @@
             const table = document.getElementById('itemTable');
             const newRow = table.insertRow();
             newRow.innerHTML = `
-                <td><input type="text" name="item_description" required></td>
-                <td><input type="number" name="item_quantity" required></td>
-                <td><input type="number" name="item_price" required></td>
+                <td><input type="text" name="item_description[]" required></td>
+                <td><input type="number" name="item_quantity[]" required></td>
+                <td><input type="number" name="item_price[]" required></td>
             `;
         }
     </script>

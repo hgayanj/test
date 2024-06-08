@@ -24,13 +24,18 @@
             background-color: #f9f9f9;
         }
 
+        .form-group {
+            margin-bottom: 15px;
+        }
+
         label {
             font-weight: bold;
         }
 
         input[type="text"],
         input[type="number"],
-        input[type="date"] {
+        input[type="date"],
+        select {
             width: calc(100% - 10px);
             margin-bottom: 10px;
             padding: 8px;
@@ -75,53 +80,42 @@
         .delete-button:hover {
             background-color: #da190b;
         }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
     </style>
-</head>
-<body>
-    <h2>Invoice Entry Form</h2>
-    <form id="invoiceForm" action="https://script.google.com/macros/s/AKfycbwltYhA5KQ9RiQjQK73EIQj7X-Rdx_7UMyTMWRYyUaow1fQI8Q-AnMU0Y57XL9AziVY/exec" method="POST" onsubmit="return validateForm()">
-        <label for="invoice_id">Invoice ID:</label>
-        <input type="text" id="invoice_id" name="invoice_id" required><br><br>
-        
-        <label for="customer_name">Customer Name:</label>
-        <input type="text" id="customer_name" name="customer_name" list="customerNameList" required><br><br>
-        <datalist id="customerNameList"></datalist>
-        
-        <label for="invoice_date">Invoice Date:</label>
-        <input type="date" id="invoice_date" name="invoice_date" required><br><br>
-
-        <label for="distributor">Distributor:</label>
-        <select id="distributor" name="distributor" required onchange="populateItemDescriptionList()">
-            <option value="">Select Distributor</option>
-            <option value="A">Sunrich Confectionery Pvt.Ltd</option>
-            <option value="B">Softlogic Retail-Pvt.Ltd</option>
-        </select>
-        
-        <h3>Item Details</h3>
-        <table id="itemTable">
-            <tr>
-                <th>Item Description</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th>Discount Percentage</th>
-                <th>Action</th>
-            </tr>
-            <tr>
-                <td><input type="text" name="item_description[]" id="item_description" required list="itemDescriptionList"></td>
-                <td><input type="number" name="item_quantity[]" required></td>
-                <td><input type="number" name="item_price[]" required></td>
-                <td><input type="number" name="discount_percentage[]" required></td>
-                <td><button type="button" onclick="deleteRow(this)" class="delete-button">Delete</button></td>
-            </tr>
-        </table>
-        <button type="button" onclick="addItemRow()">Add Item</button><br><br>
-        
-        <button type="submit">Submit</button>
-    </form>
-
-    <datalist id="itemDescriptionList"></datalist>
-
     <script>
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            const form = document.getElementById('invoiceForm');
+            const formData = new FormData(form);
+            const url = form.action;
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: new URLSearchParams(formData)
+                });
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    document.getElementById('success-message').innerText = 'Submission Successful!';
+                    form.reset();
+                } else {
+                    document.getElementById('success-message').innerText = 'Submission Failed: ' + result.message;
+                }
+            } catch (error) {
+                document.getElementById('success-message').innerText = 'Submission Failed: ' + error.message;
+            }
+        }
+
         async function fetchValidItemDescriptions(distributor) {
             try {
                 console.log('Fetching valid item descriptions...');
@@ -184,24 +178,23 @@
         }
 
         async function populateCustomerNameList() {
-        try {
-            const validCustomerNames = await fetchValidCustomerNames();
-            console.log('Valid customer names:', validCustomerNames);
-            const customerNameList = document.getElementById('customerNameList');
-            customerNameList.innerHTML = ''; // Clear existing options
+            try {
+                const validCustomerNames = await fetchValidCustomerNames();
+                console.log('Valid customer names:', validCustomerNames);
+                const customerNameList = document.getElementById('customerNameList');
+                customerNameList.innerHTML = ''; // Clear existing options
 
-            validCustomerNames.forEach(name => {
-                const option = document.createElement('option');
-                option.value = name;
-                customerNameList.appendChild(option);
-            });
+                validCustomerNames.forEach(name => {
+                    const option = document.createElement('option');
+                    option.value = name;
+                    customerNameList.appendChild(option);
+                });
 
-            console.log('Populated customerNameList with:', validCustomerNames);
-        } catch (error) {
-            console.error('Error populating customer name list:', error.message);
+                console.log('Populated customerNameList with:', validCustomerNames);
+            } catch (error) {
+                console.error('Error populating customer name list:', error.message);
+            }
         }
-        }
-
 
         async function validateForm() {
             const distributorSelect = document.getElementById('distributor');
@@ -241,9 +234,85 @@
         }
 
         window.onload = function() {
-        populateItemDescriptionList();
-        populateCustomerNameList();
+            populateItemDescriptionList();
+            populateCustomerNameList();
         };
     </script>
+</head>
+<body>
+    <h2>Invoice Entry Form</h2>
+    <form id="invoiceForm" action="https://script.google.com/macros/s/AKfycbz-yksytLC0itBorAsTiCR7f3oa7M1KOza3-Jxc60JeCFvinyYgtRzi2rCqxgjhdwpv/exec" method="POST" onsubmit="handleFormSubmit(event)">
+        <div class="grid-container">
+            <div class="form-group">
+                <label for="invoice_id">Invoice ID:</label>
+                <input type="text" id="invoice_id" name="invoice_id" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="customer_name">Customer Name:</label>
+                <input type="text" id="customer_name" name="customer_name" list="customerNameList" required>
+                <datalist id="customerNameList"></datalist>
+            </div>
+            
+            <div class="form-group">
+                <label for="invoice_date">Invoice Date:</label>
+                <input type="date" id="invoice_date" name="invoice_date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="distributor">Distributor:</label>
+                <select id="distributor" name="distributor" required onchange="populateItemDescriptionList()">
+                    <option value="">Select Distributor</option>
+                    <option value="A">Sunrich Confectionery Pvt.Ltd</option>
+                    <option value="B">Softlogic Retail-Pvt.Ltd</option>
+                </select>
+            </div>
+        </div>
+
+        <h3>Item Details</h3>
+        <table id="itemTable">
+            <tr>
+                <th>Item Description</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Discount Percentage</th>
+                <th>Action</th>
+            </tr>
+            <tr>
+                <td><input type="text" name="item_description[]" id="item_description" required list="itemDescriptionList"></td>
+                <td><input type="number" name="item_quantity[]" required></td>
+                <td><input type="number" name="item_price[]" required></td>
+                <td><input type="number" name="discount_percentage[]" required></td>
+                <td><button type="button" onclick="deleteRow(this)" class="delete-button">Delete</button></td>
+            </tr>
+        </table>
+        <button type="button" class="full-width" onclick="addItemRow()">Add Item</button>
+        
+        <div class="grid-container">
+            <div class="form-group">
+                <label for="total_amount">Total Amount:</label>
+                <input type="number" id="total_amount" name="total_amount" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="cash_amount">Cash Amount:</label>
+                <input type="number" id="cash_amount" name="cash_amount" required>
+            </div>
+
+            <div class="form-group">
+                <label for="check_amount">Cheque Amount:</label>
+                <input type="number" id="check_amount" name="check_amount" require>
+            </div>
+        
+            <div class="form-group">
+                <label for="creadit_amount">Credit Amount:</label>
+                <input type="number" id="creadit_amount" name="creadit_amount" required>
+            </div>
+        </div>
+        
+        <button type="submit" class="full-width">Submit</button>
+    </form>
+    <div id="success-message" style="color: green; margin-top: 20px;"></div>
+    <datalist id="itemDescriptionList"></datalist>
 </body>
 </html>

@@ -222,6 +222,7 @@
             newRow.innerHTML = `
                 <td><input type="text" name="item_description[]" required list="itemDescriptionList"></td>
                 <td><input type="number" name="item_quantity[]" required></td>
+                <td><input type="number" name="free_quantity[]" required></td>
                 <td><input type="number" name="item_price[]" required></td>
                 <td><input type="number" name="discount_percentage[]" required></td>
                 <td><button type="button" onclick="deleteRow(this)" class="delete-button">Delete</button></td>
@@ -241,7 +242,7 @@
 </head>
 <body>
     <h2>Invoice Entry Form</h2>
-    <form id="invoiceForm" action="https://script.google.com/macros/s/AKfycbz-yksytLC0itBorAsTiCR7f3oa7M1KOza3-Jxc60JeCFvinyYgtRzi2rCqxgjhdwpv/exec" method="POST" onsubmit="handleFormSubmit(event)">
+    <form id="invoiceForm" action="https://script.google.com/macros/s/AKfycbxk1bO9jlx9QRNHt8uhusv5BS00zmpjRWaL661brXGtE9_eealGCmk0q-vLL024Uxr9/exec" method="POST" onsubmit="handleFormSubmit(event)">
         <div class="grid-container">
             <div class="form-group">
                 <label for="invoice_id">Invoice ID:</label>
@@ -274,13 +275,15 @@
             <tr>
                 <th>Item Description</th>
                 <th>Quantity</th>
+                <th>Free Quantity</th>
                 <th>Price</th>
-                <th>Discount Percentage</th>
+                <th>Discount</th>
                 <th>Action</th>
             </tr>
             <tr>
                 <td><input type="text" name="item_description[]" id="item_description" required list="itemDescriptionList"></td>
                 <td><input type="number" name="item_quantity[]" required></td>
+                <td><input type="number" name="free_quantity[]" required></td>
                 <td><input type="number" name="item_price[]" required></td>
                 <td><input type="number" name="discount_percentage[]" required></td>
                 <td><button type="button" onclick="deleteRow(this)" class="delete-button">Delete</button></td>
